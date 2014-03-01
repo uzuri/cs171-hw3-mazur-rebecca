@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script src="../libs/jquery-1.10.1.js"></script>
+	<script src="../libs/jquery.xdomainajax.js"></script>
+	<script src="../libs/d3.v3.min.js"></script>
+	<script src="../libs/FileSaver.js"></script>
+</head>
+<body>
+
+<script>
+	var convertToInt;
+
+	$.ajax({
+		url: "http://unglobalpulse.net/ewec/",
+		type: 'GET',
+		cache: false,
+		success: function(data) {
+			var root,allData, body, table;     
+			root = $("<body></body>")
+			root.html(data.responseText)
+
+			var rows = root.find("table tr:gt(1)"); 
+			
+			
+			
+			allData = Array();
+			
+			allData.push("Date, Women's Health");
+			
+			$.each(rows, function(index, value) {
+				temptext = value.cells[0].textContent.trim() + "," + convertToInt(value.cells[3].textContent.trim());
+				allData.push(temptext);
+				console.log(temptext);
+			});
+			saveToFile(allData,"undata.csv")
+		},
+		error: function() {
+			return console.log("error");
+		}
+	});
+
+	convertToInt = function(s) {
+		return parseInt(s.replace(/,/g, ""), 10);
+	};
+	
+	/* takes an array of strings
+	   and writes them line by line into a file given by filename
+	 */
+	var saveToFile = function(arrayOfLines, fileName) {
+	   /* adds linebreaks at the end*/
+	   var blob, blobText;
+	   blobText = arrayOfLines.map(function(d) {
+		 if (d.endsWith("\n")) {
+		   return d;
+		 } else {
+		   return d + "\n";
+		 }
+	   });
+	   blob = new Blob(blobText, {
+		 type: "text/plain;charset=utf-8"
+	   });
+	   return saveAs(blob, fileName);
+	 };
+
+	 String.prototype.endsWith = function(suffix) {
+	   return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	 };
+	
+
+
+
+</script>
+
+
+</body>
+</html>
