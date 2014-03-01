@@ -36,7 +36,6 @@ svg = d3.select("#visUN").append("svg").attr({
 
 
 d3.csv("unHealth.csv", function(data) {
-		console.log(data);
 
 });
 
