@@ -4,15 +4,15 @@
 	var bbVis, brush, createVis, dataSet, handle, height, margin, svg, svg2, width, sets;
 
 	margin = {
-		top: 50,
-		right: 50,
-		bottom: 50,
+		top: 10,
+		right: 10,
+		bottom: 30,
 		left: 100
 	};
 
-	width = 960 - margin.left - margin.right;
+	width = 1200 - margin.left - margin.right;
 
-	height = 400 - margin.bottom - margin.top;
+	height = 350 - margin.bottom - margin.top;
 
 	bbVis = {
 		x: 0 + 100,
@@ -59,10 +59,12 @@
 	createVis = function() {
 		var xAxis, xScale, yAxis,  yScale;
 
-		xScale = d3.scale.linear().domain(d3.extent(dataSet, function(d) { return d.Year; })).range([0, bbVis.w]);  // define the right domain generically
+		xScale = d3.scale.linear().domain(d3.extent(dataSet, function(d) { return parseInt(d.Year); })).range([0, bbVis.w]);  // define the right domain generically
+		
+		
 		yScale = d3.scale.linear().domain([d3.max(sets, function(s) { 
 			return d3.max(s.values, function(v) { 
-				return v.pop; 
+				return parseInt(v.pop); 
 			}); 
 		}), 0]).range([0, bbVis.h]);  
 		
