@@ -35,7 +35,7 @@
 				allData.push(temptext);
 				console.log(temptext);
 			});
-			saveToFile(allData,"undata.csv")
+			saveToFile(allData,"unHealth.csv")
 		},
 		error: function() {
 			return console.log("error");

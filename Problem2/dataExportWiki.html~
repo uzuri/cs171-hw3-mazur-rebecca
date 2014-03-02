@@ -30,9 +30,8 @@
 			
 			
 			allData = Array();
-			
 			var header = table.find("th:lt(6)");
-			
+
 			var tempstring = "";
 			
 			// Build header
@@ -42,8 +41,9 @@
 					tempstring = tempstring + ",";
 				}
 				tempstring = tempstring + ($(value).text().split("(")[0]).trim();
-				
 			});
+
+
 			
 			allData.push(tempstring);
 			
@@ -57,7 +57,7 @@
 				tempstring = "";
 			
 				
-				for (i = 0; i < 6; i++)
+				for (i = 0; i < 5; i++)
 				{
 					if (i > 0)
 					{
@@ -76,13 +76,13 @@
 					}
 					
 				}
-				if (tempstring != ",,,,,")
+				if (tempstring != ",,,,")
 				{
 					allData.push(rowlabel + "," + tempstring);
 				}
 			});
 			
-			saveToFile(allData,"worlddata.csv")
+			saveToFile(allData,"timeline.csv")
 		},
 		error: function() {
 			return console.log("error");

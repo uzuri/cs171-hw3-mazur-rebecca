@@ -30,9 +30,8 @@
 			
 			
 			allData = Array();
-			
 			var header = table.find("th:lt(6)");
-			
+
 			var tempstring = "";
 			
 			// Build header
@@ -42,8 +41,9 @@
 					tempstring = tempstring + ",";
 				}
 				tempstring = tempstring + ($(value).text().split("(")[0]).trim();
-				
 			});
+
+
 			
 			allData.push(tempstring);
 			
@@ -55,7 +55,6 @@
 			
 			$.each(rows, function(index, value) {
 				tempstring = "";
-			
 				
 				for (i = 0; i < 6; i++)
 				{
@@ -67,7 +66,7 @@
 						}
 						else
 						{
-							tempstring = tempstring + "," + convertToInt(value.children[i].textContent.trim());
+							tempstring = tempstring + convertToInt(value.children[i].textContent.trim()) + "," ;
 						}
 					}
 					else
@@ -76,7 +75,7 @@
 					}
 					
 				}
-				if (tempstring != ",,,,,")
+				if (tempstring != ",,,,")
 				{
 					allData.push(rowlabel + "," + tempstring);
 				}

@@ -1,52 +1,87 @@
 /**
  * Created by hen on 2/20/14.
  */
-    var bbVis, brush, createVis, dataSet, handle, height, margin, svg, svg2, width;
+	var bbVis, brush, createVis, dataSet, handle, height, margin, svg, svg2, width;
 
-    margin = {
-        top: 50,
-        right: 50,
-        bottom: 50,
-        left: 50
-    };
+	margin = {
+		top: 50,
+		right: 50,
+		bottom: 50,
+		left: 100
+	};
 
-    width = 960 - margin.left - margin.right;
+	width = 960 - margin.left - margin.right;
 
-    height = 300 - margin.bottom - margin.top;
+	height = 400 - margin.bottom - margin.top;
 
-    bbVis = {
-        x: 0 + 100,
-        y: 10,
-        w: width - 100,
-        h: 100
-    };
+	bbVis = {
+		x: 0 + 100,
+		y: 10,
+		w: width - 100,
+		h: height
+	};
 
-    dataSet = [];
+	var dataSet = [];
+	var headers = [];
+	var years = [];
+	var pops = [];
 
-    svg = d3.select("#vis").append("svg").attr({
-        width: width + margin.left + margin.right,
-        height: height + margin.top + margin.bottom
-    }).append("g").attr({
-            transform: "translate(" + margin.left + "," + margin.top + ")"
-        });
-
-
-    d3.csv("timeline.csv", function(data) {
-
-        // convert your csv data and add it to dataSet
-
-        return createVis();
-    });
-
-    createVis = function() {
-        var xAxis, xScale, yAxis,  yScale;
-
-          xScale = d3.scale.linear().domain([0,100]).range([0, bbVis.w]);  // define the right domain generically
-//        yScale = .. // define the right y domain and range -- use bbVis
-
-//        xAxis = ..
-//        yAxis = ..
-//        // add y axis to svg !
+	svg = d3.select("#vis").append("svg").attr({
+		width: width + margin.left + margin.right,
+		height: height + margin.top + margin.bottom
+	}).append("g").attr({
+			transform: "translate(" + margin.left + "," + margin.top + ")"
+		});
 
 
-    };
+	d3.text("timeline.csv", function(data) {
+		var allrows = d3.csv.parseRows(data);
+		var headrow = allrows.slice(0, 1);
+		var dataSet = allrows.slice(1);
+		
+		headers.set1 = headrow[0][1];
+		headers.set2 = headrow[0][2];
+		headers.set3 = headrow[0][3];
+		headers.set4 = headrow[0][4];
+		headers.set5 = headrow[0][5];
+		
+		
+		for (i = 0; i < dataSet.length; i++)
+		{
+			dataSet[i].year = dataSet[i][0];
+			dataSet[i].set1 = dataSet[i][1];
+			dataSet[i].set2 = dataSet[i][2];
+			dataSet[i].set3 = dataSet[i][3];
+			dataSet[i].set4 = dataSet[i][4];
+			dataSet[i].set5 = dataSet[i][5];
+			
+			years.push(dataSet[i].year);
+			pops.push(dataSet[i].set1);
+			pops.push(dataSet[i].set2);
+			pops.push(dataSet[i].set3);
+			pops.push(dataSet[i].set4);
+			pops.push(dataSet[i].set5);
+		}
+		
+		return createVis();
+	});
+
+	createVis = function() {
+		var xAxis, xScale, yAxis,  yScale;
+
+		xScale = d3.scale.linear().domain([d3.min(years), d3.max(years)]).range([0, bbVis.w]);  // define the right domain generically
+		yScale = d3.scale.linear().domain([d3.max(pops), 0]).range([0, bbVis.h]);  // define the right y domain and range -- use bbVis
+
+		
+		
+		var xAxis = d3.svg.axis().scale(xScale).orient("bottom")
+			.tickFormat(d3.format("d"));
+		var yAxis = d3.svg.axis().scale(yScale).orient("left");
+		
+		svg.append("g")
+			.attr("id", "xaxis")
+			.attr("transform", "translate(0," + (height) + ")")
+			.call(xAxis);
+		svg.append("g").attr("id", "yaxis").call(yAxis);
+
+	};

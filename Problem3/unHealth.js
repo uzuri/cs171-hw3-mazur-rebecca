@@ -27,6 +27,8 @@ bbDetail = {
 
 dataSet = [];
 
+var parseDate = d3.time.format("%B %Y").parse;
+
 svg = d3.select("#visUN").append("svg").attr({
     width: width + margin.left + margin.right,
     height: height + margin.top + margin.bottom
@@ -36,8 +38,13 @@ svg = d3.select("#visUN").append("svg").attr({
 
 
 d3.csv("unHealth.csv", function(data) {
-		console.log(data);
-
+		
+	dataSet = data;
+	for (i = 0; i < data.length; i++)
+	{
+		dataSet[i].date = parseDate(dataSet[i].date);
+	}
+	console.log(dataSet);
 });
 
 var convertToInt = function(s) {
