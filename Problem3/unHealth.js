@@ -9,7 +9,7 @@
 	
 	var width = 1250 - margin.left - margin.right;
 	
-	var height = 800 - margin.bottom - margin.top;
+	var height = 500 - margin.bottom - margin.top;
 	
 	bbOverview = {
 		x: 0,
@@ -63,12 +63,13 @@
 			};
 		});
 		
-		createVisOverview();
-		createVisDetail();
+		createVis();
 	});
 
 	
-	createVisOverview = function() {
+	createVis = function() {
+		
+		//Overview
 		var xAxis, xScale, yAxis,  yScale;
 
 			
@@ -122,11 +123,10 @@
 		
 		set.append("path")
 			.attr("class", "line")
+			.attr("class", "path")
 			.attr("d", function(d) {
 				return line(d.values); 
 			})
-			.style("stroke", function(d) { return color(d.name); })
-			.attr("fill", "none")
 			.attr("transform", "translate(0," + (bbDetail.h) + ")");
 		
 			
@@ -139,63 +139,74 @@
 			})
 			.enter()
 			.append('circle')
+			.attr("class", "nodes")
 			.attr("cx", function(d) {
 				return xScale(d.date);
 			})
 			.attr("cy", function(d) {
 				return yScale(d.healthcontent) })
-			.attr("fill", function(d){
-				return color(d.name);
-			})
 			.attr("r", 2)
 			.attr("transform", "translate(0," + (bbDetail.h) + ")");
-	};
+			
+			
+		brush = d3.svg.brush().x(xScale).on("brush", brushed);
+		
+		svg.append("g")
+			.attr("class", "brush")
+			.call(brush)
+			.selectAll("rect").attr({
+					height: bbOverview.h,
+					transform: "translate(0," + (bbDetail.h)	 + ")"
+			});
+		
+		function brushed()
+		{
+		}
 	
-	
-	
-	createVisDetail = function() {
-		var xAxis, xScale, yAxis,  yScale;
+		// Detail view
+		
+		var dxAxis, dxScale, dyAxis,  dyScale;
 
 			
-		xScale = d3.time.scale().range([0, width - margin.left - margin.right]).domain([d3.min(dataSet, function(d) { 
+		dxScale = d3.time.scale().range([0, width - margin.left - margin.right]).domain([d3.min(dataSet, function(d) { 
 			return d.date; 
 		}), d3.max(dataSet, function(d) { 
 			return d.date; 
 		})]);
-		yScale = d3.scale.linear().domain([d3.max(dataSet, function(d) { 
+		dyScale = d3.scale.linear().domain([d3.max(dataSet, function(d) { 
 			return d.healthcontent; 
 		}), 0]).range([0, bbDetail.h - margin.bottom]); 
 		
 		
-		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");	
-		var yAxis = d3.svg.axis().scale(yScale).orient("left");
+		var dxAxis = d3.svg.axis().scale(dxScale).orient("bottom");	
+		var dyAxis = d3.svg.axis().scale(dyScale).orient("left");
 		
 		svg.append("g")
 			.attr("id", "dyaxis")
-			.call(yAxis);
+			.call(dyAxis);
 		svg.append("g")
 			.attr("id", "dxaxis")
 			.attr("transform", "translate(0," + (bbDetail.h - margin.bottom) + ")")
-			.call(xAxis);
+			.call(dxAxis);
 		
 		
 		// Make lines
 		var line = d3.svg.line()
 			.interpolate("linear")
 			.x(function(d) { 
-				return xScale(d.date); 
+				return dxScale(d.date); 
 			})
 			.y(function(d) { 
-				return yScale(d.healthcontent); 
+				return dyScale(d.healthcontent); 
 			});
 			
 		var dot = d3.svg.line()
 			.interpolate("linear")
 			.x(function(d) { 
-				return xScale(d.date); 
+				return dxScale(d.date); 
 			})
 			.y(function(d) { 
-				return yScale(d.healthcontent); 
+				return dyScale(d.healthcontent); 
 			});
 		
 		var set = svg.selectAll(".dset")
@@ -205,13 +216,24 @@
 			.attr("class", "dset");
 		
 		set.append("path")
-			.attr("class", "dline")
+			.attr("class", "detailPath")
+			.attr("class", "path")
 			.attr("d", function(d) {
 				return line(d.values); 
-			})
-			.style("stroke", function(d) { return color(d.name); })
-			.attr("fill", "none");
+			});
 		
+		var area = d3.svg.area()
+			.x(function(d) { return dxScale(d.date); })
+			.y0(bbDetail.h - margin.bottom)
+			.y1(function(d) { return dyScale(d.healthcontent); });	
+			
+		set.append("path")
+			.attr("class", "detailArea")
+			.attr("d", function(d) {
+				return area(d.values); 
+			});
+			
+			
 			
 		var point = set.append("g")
 			.attr("class", "ddots");
@@ -222,13 +244,11 @@
 			})
 			.enter()
 			.append('circle')
+			.attr("class", "nodes")
 			.attr("cx", function(d) {
-				return xScale(d.date);
+				return dxScale(d.date);
 			})
 			.attr("cy", function(d) {
-				return yScale(d.healthcontent) })
-			.attr("fill", function(d){
-				return color(d.name);
-			})
+				return dyScale(d.healthcontent) })
 			.attr("r", 2);
 	};
