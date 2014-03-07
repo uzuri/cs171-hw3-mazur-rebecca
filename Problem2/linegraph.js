@@ -34,11 +34,14 @@
 		});
 
 	
+		
+	// Many bits and pieces here borrowed from http://bl.ocks.org/mbostock/3884955)
 	
 	d3.csv("timeline.csv", function(data) {
 		
 		dataSet = data;
 			
+		// Rebuild the data in a way that preserves the headers but keeps it manageable
 		color.domain(d3.keys(dataSet[0]).filter(function(key) {
 			return key !== "Year"; 
 		}));

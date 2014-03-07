@@ -121,7 +121,7 @@
 		
 		set.append("path")
 			.attr("class", "line")
-			.attr("d", function(d) { 
+			.attr("d", function(d) {
 				return line(cleanup(d.values)); 
 			})
 			.style("stroke", function(d) { return color(d.name); })
