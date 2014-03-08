@@ -13,3 +13,5 @@ Implementation Arguments
 ------------------------
 
 I ended up doing the multple views (trendlines, number vs. average, percentage vs. average) because I felt that that gives you the best context for what you're looking at.  
+
+Note that I used a slightly different scrape to ease calculations on the graph -- dataExportWikiwithaverage.html calculates and includes the Average as a column in the csv it creates.  This makes it very easy to display it and use it to calculate the diffs.
