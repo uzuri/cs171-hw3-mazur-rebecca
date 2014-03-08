@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="../libs/d3.v3.min.js"></script>
+    <style>
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: lightgrey; }
+
+        .dataArea {
+            stroke: 1px steelblue;
+            fill:steelblue;
+            fill-opacity:0.5;
+            clip-path: url(#clip);
+        }
+        
+        path.line
+        {
+        	stroke-width: 3px;
+        }
+
+
+    </style>
+
+</head>
+<body>
+	<form>
+		<input type="radio" name="graphtype" value="data" />Data Graph 
+		<input type="radio" name="graphtype" value="absolute" />Uncertainty, Absolute 
+		<input type="radio" name="graphtype" value="relative" />Uncertainty, Relative 
+	</form>
+    <div id="vis"></div>
+
+    <p><strong>Note: </strong> light gray markers indicate interpolated data; black is the average value line</p>
+
+	<script src = "differenceGraph.js"></script>
+
+
+</body>
+</html>

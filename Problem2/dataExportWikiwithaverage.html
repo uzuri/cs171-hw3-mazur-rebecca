@@ -42,6 +42,8 @@
 				}
 				tempstring = tempstring + ($(value).text().split("(")[0]).trim();
 			});
+			
+			tempstring = tempstring + ",Average";
 
 
 			
@@ -56,6 +58,8 @@
 			$.each(rows, function(index, value) {
 				tempstring = "";
 				
+				var count = 0;
+				var running = 0;
 				for (i = 0; i < 6; i++)
 				{
 					if (i > 0)
@@ -66,6 +70,8 @@
 						}
 						else
 						{
+							count = count + 1;
+							running = running + convertToInt(value.children[i].textContent.trim());
 							tempstring = tempstring + convertToInt(value.children[i].textContent.trim()) + "," ;
 						}
 					}
@@ -75,13 +81,21 @@
 					}
 					
 				}
-				if (tempstring != ",,,,")
+				if (tempstring.trim() != ",,,,,")
 				{
-					allData.push(rowlabel + "," + tempstring);
+					var average = "";
+					if (count > 0)
+					{
+						average = Math.floor(running / count);
+					}
+					console.log(count);
+					allData.push(rowlabel + "," + tempstring + "" + average);
 				}
 			});
 			
-			saveToFile(allData,"timeline.csv")
+			console.log("test");
+			
+			saveToFile(allData,"timelineav.csv")
 		},
 		error: function() {
 			return console.log("error");
