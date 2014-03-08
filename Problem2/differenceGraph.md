@@ -12,4 +12,4 @@ Design Studio Analysis
 Implementation Arguments
 ------------------------
 
-I ended up doing the multple views (trendlines, number vs. average, percentage vs. average) because I felt that that gives you the best context for what you're looking at.
+I ended up doing the multple views (trendlines, number vs. average, percentage vs. average) because I felt that that gives you the best context for what you're looking at.  

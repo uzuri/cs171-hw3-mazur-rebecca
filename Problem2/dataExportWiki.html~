@@ -55,9 +55,8 @@
 			
 			$.each(rows, function(index, value) {
 				tempstring = "";
-			
 				
-				for (i = 0; i < 5; i++)
+				for (i = 0; i < 6; i++)
 				{
 					if (i > 0)
 					{
@@ -67,7 +66,7 @@
 						}
 						else
 						{
-							tempstring = tempstring + "," + convertToInt(value.children[i].textContent.trim());
+							tempstring = tempstring + convertToInt(value.children[i].textContent.trim()) + "," ;
 						}
 					}
 					else
