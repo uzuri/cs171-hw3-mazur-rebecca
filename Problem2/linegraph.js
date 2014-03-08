@@ -10,9 +10,9 @@
 		left: 100
 	};
 
-	width = 1200 - margin.left - margin.right;
+	width = 1000 - margin.left - margin.right;
 
-	height = 350 - margin.bottom - margin.top;
+	height = 450 - margin.bottom - margin.top;
 
 	bbVis = {
 		x: 0 + 100,
@@ -40,6 +40,7 @@
 	d3.csv("timeline.csv", function(data) {
 		
 		dataSet = data;
+		
 			
 		// Rebuild the data in a way that preserves the headers but keeps it manageable
 		color.domain(d3.keys(dataSet[0]).filter(function(key) {
@@ -49,11 +50,37 @@
 		sets = color.domain().map(function(name) {
 			return {
 				name: name,
-				values: dataSet.map(function(d) {
-					return {year: d.Year, pop: d[name], name: name};
+				values: dataSet.map(function(d, i) {
+					if (d[name] != "")
+					{
+						return {year: d.Year, pop: d[name], name: name, fromset: "original"};
+					}
+					
+					
+					var prevval = i;
+					var nextval = i;
+					while (prevval > 0 && dataSet[prevval][name] == "")
+					{
+						prevval--;
+					}
+					while (nextval < dataSet.length - 1 && dataSet[nextval][name] == "")
+					{
+						nextval++;
+					}
+					
+					if (dataSet[prevval][name] == "" || dataSet[nextval][name] == "")
+					{
+						return {year: d.Year, pop: d[name], name: name, fromset: "original"};
+					}
+					
+					var newval = +dataSet[prevval][name] + Math.floor(((dataSet[nextval][name] - dataSet[prevval][name]) * ((d.Year - dataSet[prevval].Year)/(dataSet[nextval].Year - dataSet[prevval].Year))));
+					
+					return {year: d.Year, pop: newval, name: name, fromset: "faked"};
 				})
 			};
 		});
+		
+		console.log(sets);
 		
 		return createVis();
 	});
@@ -146,6 +173,10 @@
 			.attr("cy", function(d) {
 				return yScale(d.pop) })
 			.attr("fill", function(d){
+				if (d.fromset != "original")
+				{
+					return "#cccccc";
+				}
 				return color(d.name);
 			})
 			.attr("r", 2);
