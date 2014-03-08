@@ -7,7 +7,7 @@
 		left: 60
 	};
 	
-	var width = 900 - margin.left - margin.right;
+	var width = 1200 - margin.left - margin.right;
 	
 	var height = 500 - margin.bottom - margin.top;
 	
@@ -69,15 +69,27 @@
 	
 	createVis = function() {
 		
+		svg.append("defs").append("clipPath")
+			.attr("id", "clip")
+			.append("rect")
+			.attr("width", bbOverview.w - margin.right - margin.left)
+			.attr("height", height);
+		
+		
 		//Overview
 		var xAxis, xScale, yAxis,  yScale;
 
-			
-		xScale = d3.time.scale().range([0, width - margin.left - margin.right]).domain([d3.min(dataSet, function(d) { 
+		var mindate, maxdate;
+		
+		mindate = d3.min(dataSet, function(d) { 
 			return d.date; 
-		}), d3.max(dataSet, function(d) { 
+		});
+		
+		maxdate = d3.max(dataSet, function(d) { 
 			return d.date; 
-		})]);
+		});
+		
+		xScale = d3.time.scale().range([0, width - margin.left - margin.right]).domain([mindate, maxdate]);
 		yScale = d3.scale.linear().domain([d3.max(dataSet, function(d) { 
 			return d.healthcontent; 
 		}), 0]).range([0, bbOverview.h]); 
@@ -248,29 +260,30 @@
 				return dyScale(d.healthcontent) })
 			.attr("r", 2);
 			
-		
-			
-		
+		svg.append("defs")
+			.append("clipPath")
+			.attr("id", "cliparea")
+			.append("rect")
+			.attr({
+					height: bbDetail.h
+			});
 		
 		
 		function brushed()
 		{
 			// set new domain for big graph
 			
-			
 			var extent = brush.extent();
 			
-			dxScale.domain([d3.min(dataSet, function(d) { 
-				return d.date; 
-			}), d3.max(dataSet, function(d) { 
-				return d.date; 
-			})]);
-			
-			
-			if (extent.length == 2)
+			if (!brush.empty())
 			{
 				dxScale.domain([extent[0], extent[1]]);
 			}
+			else
+			{
+				dxScale.domain([mindate, maxdate]);
+			}
+			
 			
 			dxAxis = d3.svg.axis().scale(dxScale).orient("bottom");
 			svg.selectAll(".detailPath").attr("d", function(d) {

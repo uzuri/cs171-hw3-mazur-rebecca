@@ -7,7 +7,7 @@
 		left: 60
 	};
 	
-	var width = 1250 - margin.left - margin.right;
+	var width = 900 - margin.left - margin.right;
 	
 	var height = 500 - margin.bottom - margin.top;
 	
@@ -119,11 +119,12 @@
 			.data(sets)
 			.enter()
 			.append("g")
-			.attr("class", "set");
+			.attr("class", "set")
+			.attr("width", 100)
+			.attr("overflow", "hidden");
 		
 		set.append("path")
-			.attr("class", "line")
-			.attr("class", "path")
+			.attr("class", "line path")
 			.attr("d", function(d) {
 				return line(d.values); 
 			})
@@ -158,10 +159,6 @@
 					height: bbOverview.h,
 					transform: "translate(0," + (bbDetail.h)	 + ")"
 			});
-		
-		function brushed()
-		{
-		}
 	
 		// Detail view
 		
@@ -191,7 +188,7 @@
 		
 		
 		// Make lines
-		var line = d3.svg.line()
+		var dline = d3.svg.line()
 			.interpolate("linear")
 			.x(function(d) { 
 				return dxScale(d.date); 
@@ -200,7 +197,7 @@
 				return dyScale(d.healthcontent); 
 			});
 			
-		var dot = d3.svg.line()
+		var ddot = d3.svg.line()
 			.interpolate("linear")
 			.x(function(d) { 
 				return dxScale(d.date); 
@@ -209,20 +206,19 @@
 				return dyScale(d.healthcontent); 
 			});
 		
-		var set = svg.selectAll(".dset")
+		var dset = svg.selectAll(".dset")
 			.data(sets)
 			.enter()
 			.append("g")
 			.attr("class", "dset");
 		
-		set.append("path")
-			.attr("class", "detailPath")
-			.attr("class", "path")
+		dset.append("path")
+			.attr("class", "detailPath path")
 			.attr("d", function(d) {
-				return line(d.values); 
+				return dline(d.values); 
 			});
 		
-		var area = d3.svg.area()
+		var darea = d3.svg.area()
 			.x(function(d) { return dxScale(d.date); })
 			.y0(bbDetail.h - margin.bottom)
 			.y1(function(d) { return dyScale(d.healthcontent); });	
@@ -230,15 +226,15 @@
 		set.append("path")
 			.attr("class", "detailArea")
 			.attr("d", function(d) {
-				return area(d.values); 
+				return darea(d.values); 
 			});
 			
 			
 			
-		var point = set.append("g")
+		var dpoint = set.append("g")
 			.attr("class", "ddots");
 		
-		point.selectAll('circle')
+		dpoint.selectAll('circle')
 			.data(function(d) { 
 				return d.values
 			})
@@ -251,4 +247,48 @@
 			.attr("cy", function(d) {
 				return dyScale(d.healthcontent) })
 			.attr("r", 2);
+			
+		
+			
+		
+		
+		
+		function brushed()
+		{
+			// set new domain for big graph
+			
+			
+			var extent = brush.extent();
+			
+			dxScale.domain([d3.min(dataSet, function(d) { 
+				return d.date; 
+			}), d3.max(dataSet, function(d) { 
+				return d.date; 
+			})]);
+			
+			
+			if (extent.length == 2)
+			{
+				dxScale.domain([extent[0], extent[1]]);
+			}
+			
+			dxAxis = d3.svg.axis().scale(dxScale).orient("bottom");
+			svg.selectAll(".detailPath").attr("d", function(d) {
+				return dline(d.values); 
+			});
+			svg.selectAll(".detailArea").attr("d", function(d) {
+				return darea(d.values); 
+			});
+			
+			svg.selectAll(".ddots circle")
+				.attr("cx", function(d) {
+					return dxScale(d.date);
+				})
+				.attr("cy", function(d) {
+					return dyScale(d.healthcontent) 
+				});
+			svg.selectAll("#dxaxis").call(dxAxis);
+		}
+			
+			
 	};
