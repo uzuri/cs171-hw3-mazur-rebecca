@@ -269,6 +269,23 @@
 			});
 		
 		
+		d3.select("#spike").on("click", function() {
+			var d1 = new Date("August 1, 2012 00:00:00");
+			var d2 = new Date("September 1, 2012 00:00:00");
+			brush.extent([d1, d2]);
+			svg.select(".brush").call(brush);
+			brushed();
+		});
+		
+		d3.select("#dip").on("click", function() {
+			var d1 = new Date("April 1, 2012 00:00:00");
+			var d2 = new Date("July 15, 2012 00:00:00");
+			brush.extent([d1, d2]);
+			svg.select(".brush").call(brush);
+			brushed();
+		});
+			
+			
 		function brushed()
 		{
 			// set new domain for big graph
